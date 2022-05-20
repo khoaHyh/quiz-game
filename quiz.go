@@ -30,7 +30,7 @@ func ReadCsvFile() ([][]string, error) {
 
 func RunQuiz(readCsvFile [][]string) map[string]int {
 	// Initiate Map to hold response values
-	response := map[string]int{"correctAnswers": 0, "totalQuestions": 0}
+	response := map[string]int{"correctAnswers": 0, "totalQuestions": len(readCsvFile)}
 
 	// Iterate through each line of the csv file and prompt user with a question
 	// while incrementing the appropriate response values
@@ -42,10 +42,8 @@ func RunQuiz(readCsvFile [][]string) map[string]int {
 		// Print question
 		fmt.Println(quiz.Question + " ")
 
-		response["totalQuestions"]++
-		var userInput string
-
 		// Take input from user and store in a variable
+		var userInput string
 		fmt.Scanln(&userInput)
 
 		// Check if the answer is correct and increment variable
