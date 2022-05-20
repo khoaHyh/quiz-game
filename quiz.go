@@ -34,11 +34,26 @@ func main() {
 		errors.WithMessage(err, "something errored?")
 		os.Exit(1)
 	}
+	correctAnswers := 0
+	totalQuestions := 0
 	for _, line := range readCsvFile {
 		quiz := quizData{
 			Question: line[0],
 			Answer:   line[1],
 		}
-		fmt.Println(quiz.Question + " " + quiz.Answer)
+		// Print question
+		fmt.Println(quiz.Question + " ")
+		totalQuestions++
+		var userInput string
+		// Take input from user
+		fmt.Scanln(&userInput)
+
+		// Check if the answer is correct and increment variable
+		// that keeps track of correct answers
+		if userInput == line[1] {
+			correctAnswers++
+		}
 	}
+	fmt.Printf("Correct Answers: %v\n", correctAnswers)
+	fmt.Printf("Total Questions: %v\n", totalQuestions)
 }

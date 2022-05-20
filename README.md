@@ -53,7 +53,7 @@ The program from part 1 will be adapted with the addition of a timer.
 
 ### Bonus
 
-1. add strin  trimming and cleanup to help ensure that correct answers with whitespace, capitalizaiton,
+1. add string trimming and cleanup to help ensure that correct answers with whitespace, capitalizaiton,
    etc are not considered incorrect.
 2. Add an option (a new flag) to shuffle the quiz order each time it is run
 
