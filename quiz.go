@@ -28,14 +28,12 @@ func ReadCsvFile() ([][]string, error) {
 	return csvReader, err
 }
 
-func main() {
-	readCsvFile, err := ReadCsvFile()
-	if err != nil {
-		errors.WithMessage(err, "something errored?")
-		os.Exit(1)
-	}
-	correctAnswers := 0
-	totalQuestions := 0
+func RunQuiz(readCsvFile [][]string) map[string]int {
+	// Initiate Map to hold response values
+	response := map[string]int{"correctAnswers": 0, "totalQuestions": 0}
+
+	// Iterate through each line of the csv file and prompt user with a question
+	// while incrementing the appropriate response values
 	for _, line := range readCsvFile {
 		quiz := quizData{
 			Question: line[0],
@@ -43,17 +41,30 @@ func main() {
 		}
 		// Print question
 		fmt.Println(quiz.Question + " ")
-		totalQuestions++
+
+		response["totalQuestions"]++
 		var userInput string
-		// Take input from user
+
+		// Take input from user and store in a variable
 		fmt.Scanln(&userInput)
 
 		// Check if the answer is correct and increment variable
 		// that keeps track of correct answers
-		if userInput == line[1] {
-			correctAnswers++
+		if userInput == quiz.Answer {
+			response["correctAnswers"]++
 		}
 	}
-	fmt.Printf("Correct Answers: %v\n", correctAnswers)
-	fmt.Printf("Total Questions: %v\n", totalQuestions)
+	return response
+}
+
+func main() {
+	readCsvFile, err := ReadCsvFile()
+	if err != nil {
+		errors.WithMessage(err, "something errored?")
+		os.Exit(1)
+	}
+	response := RunQuiz(readCsvFile)
+
+	fmt.Printf("Correct Answers: %v\n", response["correctAnswers"])
+	fmt.Printf("Total Questions: %v\n", response["totalQuestions"])
 }
