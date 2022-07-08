@@ -14,7 +14,7 @@ type quizData struct {
 
 func ReadCsvFile() ([][]string, error) {
 	// open file
-	csvFile, err := os.Open("test.csv") // TODO: need to do wildcard *.csv
+	csvFile, err := os.Open("questions_answers.csv") // TODO: need to do wildcard *.csv
 	if err != nil {
 		return nil, errors.Wrap(err, "opening file failed")
 	}
