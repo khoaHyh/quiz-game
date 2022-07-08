@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/csv"
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"path"
+	"strconv"
 )
 
 type quizData struct {
@@ -14,12 +16,30 @@ type quizData struct {
 	Answer   string
 }
 
-// TODO: Need to allow user to customize filename via a flag
-// 1. figure out how to use flags
-// 2. figure out how to customize filename in golang
-// 3. figure out how to run only the method to customize filename
-//      when the flag is present
-// *bonus*: make renaming method a module that we import
+type Color string
+
+const (
+	ColorRed    = "\u001b[31m"
+	ColorGreen  = "\u001b[32m"
+	ColorYellow = "\u001b[33m"
+	ColorBlue   = "\u001b[34m"
+	ColorReset  = "\u001b[0m"
+)
+
+func colorizeMessage(color Color, message string) {
+	fmt.Println(string(color), message, string(ColorReset))
+}
+
+func customizeFileName(fileName string) string {
+	fmt.Println("Enter the new name of the csv file (include .csv at the end):")
+
+	var newFileName string
+	fmt.Scanln(&newFileName)
+
+	os.Rename(fileName, newFileName)
+
+	return newFileName
+}
 
 // Reads files in current directory to find a csv file to use
 // and if there is more than one csv file then prompt the user to
@@ -91,16 +111,23 @@ func RunQuiz(readCsvFile [][]string) map[string]int {
 func main() {
 	csvFileName, err := SelectCsvFile()
 
+	requestToCustomizeFileName := flag.Bool("file", false, "Option to customize file name chosen")
+	flag.Parse()
+
+	if *requestToCustomizeFileName {
+		csvFileName = customizeFileName(csvFileName)
+	}
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	readCsvFile, err := ReadCsvFile(csvFileName)
+	csvFileContent, err := ReadCsvFile(csvFileName)
 	if err != nil {
 		log.Fatal(err)
 	}
-	response := RunQuiz(readCsvFile)
+	response := RunQuiz(csvFileContent)
 
-	fmt.Printf("Correct Answers: %v\n", response["correctAnswers"])
-	fmt.Printf("Total Questions: %v\n", response["totalQuestions"])
+	colorizeMessage(ColorGreen, "Correct Answers:"+strconv.Itoa(response["correctAnswers"]))
+	colorizeMessage(ColorYellow, "Total Questions:"+strconv.Itoa(response["totalQuestions"]))
 }
