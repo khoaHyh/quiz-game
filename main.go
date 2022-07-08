@@ -14,7 +14,7 @@ type quizData struct {
 	Answer   string
 }
 
-// Need to allow user to customize filename via a flag
+// TODO: Need to allow user to customize filename via a flag
 // 1. figure out how to use flags
 // 2. figure out how to customize filename in golang
 // 3. figure out how to run only the method to customize filename
@@ -22,7 +22,7 @@ type quizData struct {
 // *bonus*: make renaming method a module that we import
 
 // Reads files in current directory to find a csv file to use
-// If there is more than one csv file then prompt the user to
+// and if there is more than one csv file then prompt the user to
 // choose one
 func SelectCsvFile() (string, error) {
 	files, err := os.ReadDir("./")
@@ -30,20 +30,25 @@ func SelectCsvFile() (string, error) {
 		return "", errors.New("reading files in './' directory failed")
 	}
 
-	var csvFileNames []string
+	csvFileNames := make(map[int]string)
+	var csvFileCounter = 1
 
 	for _, f := range files {
 		if path.Ext(f.Name()) == ".csv" {
-			csvFileNames = append(csvFileNames, f.Name())
+			csvFileNames[csvFileCounter] = f.Name()
+			fmt.Printf("%v %v\n", csvFileCounter, f.Name())
+			csvFileCounter++
 		}
 	}
+	fmt.Println("Multiple csv files were found. Enter the number that corresponds with the file of your choice.")
 
-	// TODO: need to prompt use to choose csv file if more than one
-	return csvFileNames[0], err
+	var fileKeyChoice int
+	fmt.Scanln(&fileKeyChoice)
+
+	return csvFileNames[fileKeyChoice], err
 }
 
 func ReadCsvFile(csvFileName string) ([][]string, error) {
-	fmt.Printf("files: %v\n", csvFileName)
 	// open file
 	csvFile, err := os.Open(csvFileName)
 	if err != nil {
