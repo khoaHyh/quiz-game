@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"time"
 )
 
 type quizData struct {
@@ -25,6 +26,8 @@ const (
 	ColorBlue   = "\u001b[34m"
 	ColorReset  = "\u001b[0m"
 )
+
+const DEFAULT_TIME_LIMIT = 30 // time in seconds
 
 func colorizeMessage(color Color, message string) {
 	fmt.Println(string(color), message, string(ColorReset))
@@ -86,6 +89,13 @@ func ReadCsvFile(csvFileName string) ([][]string, error) {
 func RunQuiz(readCsvFile [][]string) map[string]int {
 	// Initiate Map to hold response values
 	response := map[string]int{"correctAnswers": 0, "totalQuestions": len(readCsvFile)}
+
+	// Start timer
+	fmt.Printf("Default time limit of %v seconds has started.\n", DEFAULT_TIME_LIMIT)
+	time.AfterFunc(DEFAULT_TIME_LIMIT*time.Second, func() {
+		fmt.Println("Time limit has been reached. Quiz ending now.")
+		os.Exit(0)
+	})
 
 	// Iterate through each line of the csv file and prompt user with a question
 	// while incrementing the appropriate response values
